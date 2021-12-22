@@ -7,14 +7,14 @@ basedir="/var/www/"
 
 #Showing help (help --help)
 if [ "$1" == "help" ] || [ "$1" == "--help" ]; then
-  echo "Virtual host maker (for Nginx)"
-  echo "Just run from root"
-  exit 0
+	echo "Virtual host maker (for Nginx)"
+	echo "Just run from root"
+	exit 0
 fi
 
 if [ "$EUID" -ne 0 ]
-  then echo "Please run me as root"
-  exit
+	then echo "Please run me as root"
+	exit
 fi
 
 #Search php sock
@@ -44,33 +44,37 @@ echo "index.php ready"
 configname="/etc/nginx/conf.d/"$catalog".conf"
 touch $configname
 echo "server {
-        listen 80;
-        server_name $site_name;
-        access_log $fullpath/logs/access_log;
-        error_log $fullpath/logs/error_log;
-        root $fullpath/http;
-        index index.php index.html;
-        charset utf-8;
-    location / {
-        try_files       \$uri \$uri/ @rewrite;
-    }
-    location @rewrite {
-        rewrite         ^/(.*)\$ /index.php?q=\$1;
-    }
-        location ~ \.php\$ {
-                fastcgi_pass  unix:$PHP_SOCK;
-                fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-                include fastcgi_params;
-        }
-#static files caching
-    location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf|css|js|webp)$ {
-        access_log off;
-        log_not_found off;
-	      expires 8d;
-    }
+	listen 80;
+	server_name $site_name;
+	access_log $fullpath/logs/access_log;
+	error_log $fullpath/logs/error_log;
+	root $fullpath/http;
+	index index.php index.html;
+	charset utf-8;
+  
+	location / {
+		try_files       \$uri \$uri/ @rewrite;
+	}
 
-    location = /robots.txt { access_log off; log_not_found off; }
-    location ~ /\. { deny  all; access_log off; log_not_found off; }
+	location @rewrite {
+		rewrite         ^/(.*)\$ /index.php?q=\$1;
+	}
+
+	location ~ \.php\$ {
+		fastcgi_pass  unix:$PHP_SOCK;
+		fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+		include fastcgi_params;
+	}
+
+	#static files caching
+	location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf|css|js|webp)$ {
+		access_log off;
+		log_not_found off;
+		expires 8d;
+	}
+
+	location = /robots.txt { access_log off; log_not_found off; }
+	location ~ /\. { deny  all; access_log off; log_not_found off; }
 }
 " > $configname
 
