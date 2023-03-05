@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #Options. Insert yours
-user="www-data"
-group="www-data"
-basedir="/var/www/"
+user=$(ls -la | head -n 2 | tail -n 1 | awk '{print $3;}');
+group=$user;
+basedir="/home/$user/projects/"
 
 #Showing help (help --help)
 if [ "$1" == "help" ] || [ "$1" == "--help" ]; then
@@ -82,10 +82,10 @@ echo "Nginx config ready"
 
 #Changing folders and files permissions
 cd $fullpath
-chown -R $user:$group $PWD;
-find $PWD -type d -exec chmod 0755 '{}' \;
-find $PWD -type f -exec chmod 0644 '{}' \;
-chmod +x $PWD
+chown -R $user:$group $fullpath;
+find $fullpath -type d -exec chmod 0755 '{}' \;
+find $fullpath -type f -exec chmod 0644 '{}' \;
+chmod +x $fullpath
 echo "Permissions ready"
 
 #Adding hostname to hosts
