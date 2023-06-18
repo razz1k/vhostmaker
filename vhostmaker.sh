@@ -40,6 +40,21 @@ echo -e "<?php
 echo \042<h1>$site_name Work!</h1>\042;" >> $indexfile
 echo "index.php ready"
 
+#Making logrotate confing
+cat <<EOF > /etc/logrotate.d/$site_name.nginx
+$fullpath/logs/*.log {
+        weekly
+        missingok
+        rotate 52
+        compress
+        delaycompress
+        notifempty
+        create 644 nginx adm
+        sharedscripts
+        dateext dateformat -%Y.%m.%d
+}
+EOF
+
 #Making nginx confing
 configname="/etc/nginx/conf.d/"$catalog".conf"
 touch $configname
