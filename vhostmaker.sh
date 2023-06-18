@@ -46,8 +46,8 @@ touch $configname
 echo "server {
 	listen 80;
 	server_name $site_name;
-	access_log $fullpath/logs/access_log;
-	error_log $fullpath/logs/error_log;
+	access_log $fullpath/logs/access.log;
+	error_log $fullpath/logs/error.log;
 	root $fullpath/http;
 	index index.php index.html;
 	charset utf-8;
@@ -68,13 +68,13 @@ echo "server {
 
 	#static files caching
 	location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf|css|js|webp)$ {
-		access_log off;
+		access.log off;
 		log_not_found off;
 		expires 8d;
 	}
 
-	location = /robots.txt { access_log off; log_not_found off; }
-	location ~ /\. { deny  all; access_log off; log_not_found off; }
+	location = /robots.txt { access.log off; log_not_found off; }
+	location ~ /\. { deny  all; access.log off; log_not_found off; }
 }
 " > $configname
 
